@@ -2,15 +2,36 @@
 {
     public static class FixtureAlgorithm
     {
+        public enum Options
+        {
+            EHome,
+            EHomeAway
+        };
 
-        /// <summary>
-        /// Calculate all rounds of fixtures using the round robin algorithm
-        /// </summary>
-        /// <typeparam name="M">The "match" object that implements IFixture interface</typeparam>
-        /// <typeparam name="T">The "team" object that implements IFixtureEntity interface</typeparam>
-        /// <param name="fixtureEntities">A list of teams or players to organise into a set of rounds</param>
-        /// <returns>A list of lists, the inner list represents a round of matches.</returns>
-        public static List<List<M>> GenerateFixtures<M,T>(IEnumerable<T> fixtureEntities) where M : IFixture, new() where T : IFixtureEntity
+        private static Dictionary<string, IFixture> _scheduledMatches;
+
+        public static List<List<M>> GenerateFixtures<M, T>(IEnumerable<T> fixtureEntities, Options option = Options.EHome) where M : IFixture, new() where T : IFixtureEntity
+        {
+            _scheduledMatches = new Dictionary<string, IFixture>();
+
+            if (option == Options.EHome)
+            {
+                return RoundRobin<M,T>(fixtureEntities);
+            }
+
+            List<List<M>> firstHalf = RoundRobin<M,T>(fixtureEntities);
+            fixtureEntities.ToList().Shuffle();
+            List<List<M>> secondHalf = RoundRobin<M, T>(fixtureEntities);
+
+            foreach(List<M> matches in secondHalf)
+            {
+                firstHalf.Add(matches);
+            }
+
+            return firstHalf;
+        }
+
+        private static List<List<M>> RoundRobin<M, T>(IEnumerable<T> fixtureEntities) where M : IFixture, new() where T : IFixtureEntity
         {
             List<List<M>> fixtureList = new List<List<M>>();
 
@@ -31,6 +52,21 @@
                 match.HomeEntity = firstTeam;
                 match.AwayEntity = awayTeam;
                 matchesInRound.Add(match);
+
+                string matchCode = match.HomeEntity.Code + match.AwayEntity.Code;
+
+                if (_scheduledMatches.GetValueOrDefault(matchCode) != null)
+                {
+                    T spare = firstTeam;
+                    firstTeam = awayTeam;
+                    awayTeam = spare;
+
+                    match.HomeEntity = firstTeam;
+                    match.AwayEntity = awayTeam;
+                    matchCode = match.HomeEntity.Code + match.AwayEntity.Code;
+                }
+                
+                _scheduledMatches.Add(matchCode, match);
 
                 for (int i = 0; i < numberOfMatchesPerRound - 1; i++)
                 {

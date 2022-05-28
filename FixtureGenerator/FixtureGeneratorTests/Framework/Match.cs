@@ -9,8 +9,8 @@ namespace FixtureGeneratorTests.Framework
 {
     public class Match : IFixture
     {
-        public IFixtureEntity HomeEntity { get; set; }
-        public IFixtureEntity AwayEntity { get; set; }
+        public IFixtureEntity? HomeEntity { get; set; }
+        public IFixtureEntity? AwayEntity { get; set; }
 
         public Match()
         {

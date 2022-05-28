@@ -1,31 +1,7 @@
 ﻿namespace FixtureGenerator
 {
-    public class FixtureGenerator
+    public static class FixtureAlgorithm
     {
-        public enum EAlgorithmOption
-        {
-            eRoundRobin = 0,
-            eBackTrack = 1
-        };
-
-        public FixtureGenerator()
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fixtureEntities"></param>
-        /// <param name="option"></param>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
-        public IEnumerable<IEnumerable<IFixture>> GenerateFixtureList(
-            IEnumerable<IFixtureEntity> fixtureEntities, 
-            EAlgorithmOption option = EAlgorithmOption.eRoundRobin, 
-            List<Func<bool>>? constraint = null)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Calculate all rounds of fixtures using the round robin algorithm
@@ -34,7 +10,7 @@
         /// <typeparam name="T">The "team" object that implements IFixtureEntity interface</typeparam>
         /// <param name="fixtureEntities">A list of teams or players to organise into a set of rounds</param>
         /// <returns>A list of lists, the inner list represents a round of matches.</returns>
-        public List<List<M>> RoundRobin<M,T>(IEnumerable<T> fixtureEntities) where M : IFixture, new() where T : IFixtureEntity
+        public static List<List<M>> GenerateFixtures<M,T>(IEnumerable<T> fixtureEntities) where M : IFixture, new() where T : IFixtureEntity
         {
             List<List<M>> fixtureList = new List<List<M>>();
 
@@ -71,11 +47,6 @@
             }
 
             return fixtureList;
-        }
-
-        private List<List<IFixture>> BackTrack(IEnumerable<IFixtureEntity> fixtureEntities, List<Func<bool>>? constraints = null)
-        {
-            throw new NotImplementedException();
         }
     }
 }

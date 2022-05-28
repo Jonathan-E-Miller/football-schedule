@@ -22,9 +22,9 @@ namespace FixtureGeneratorTests
         [Test]
         public void TestRoundRobin()
         {
-            FixtureGenerator.FixtureGenerator fixtureGenerator = new FixtureGenerator.FixtureGenerator();
+           
 
-            List<List<Match>> result = fixtureGenerator.RoundRobin<Match, Team>(_teams);
+            List<List<Match>> result = FixtureAlgorithm.GenerateFixtures<Match, Team>(_teams);
 
             // Three rounds of fixtures
             Assert.IsTrue(result.Count == 3);

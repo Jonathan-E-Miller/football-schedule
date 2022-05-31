@@ -49,21 +49,34 @@
                 T firstTeam = fixtureEntities.ElementAt(0);
                 T awayTeam = roundRobin.ElementAt((round + numberOfTeamsInRound - 1) % numberOfTeamsInRound);
 
-                M match = CreateMatch<M, T>(firstTeam, awayTeam);
-                matchesInRound.Add(match);
+                if (round % 2 == 0)
+                {
+                    M match = CreateMatch<M, T>(firstTeam, awayTeam);
+                    ScheduleMatchOrSwap<M>(match, matchesInRound);
+                }
+                else
+                {
+                    M match = CreateMatch<M, T>(awayTeam, firstTeam);
+                    ScheduleMatchOrSwap<M>(match, matchesInRound);
+                }
 
-                string matchCode = match.HomeEntity.Code + match.AwayEntity.Code;
-
-                ScheduleMatchOrSwap<M>(match);
 
                 for (int i = 1; i < numberOfMatchesPerRound; i++)
                 {
                     
                     int homeIdx = (i + round - 1) % numberOfTeamsInRound;
-
                     int awayIdx = (round + numberOfTeamsInRound - i - 1) % numberOfTeamsInRound;
-                    M roundMatch = CreateMatch<M, T>(roundRobin.ElementAt(homeIdx), roundRobin.ElementAt(awayIdx));
-                    matchesInRound.Add(roundMatch);
+
+                    if (i % 2 == 0)
+                    {
+                        M roundMatch = CreateMatch<M, T>(roundRobin.ElementAt(homeIdx), roundRobin.ElementAt(awayIdx));
+                        ScheduleMatchOrSwap<M>(roundMatch, matchesInRound);
+                    }
+                    else
+                    {
+                        M roundMatch = CreateMatch<M, T>(roundRobin.ElementAt(awayIdx), roundRobin.ElementAt(homeIdx));
+                        ScheduleMatchOrSwap<M>(roundMatch, matchesInRound);
+                    }
                 }
                 fixtureList.Add(matchesInRound);
             }
@@ -81,14 +94,18 @@
             return match;
         }
 
-        private static void ScheduleMatchOrSwap<M>(M match) where M: IFixture
+        private static void ScheduleMatchOrSwap<M>(M match, List<M> matchesInRound) where M: IFixture
         {
-            if (match != null && match.Code != null && _scheduledMatches.ContainsKey(match.Code))
+            if (match != null && match.Code != null)
             {
-                Swap<M>(match);
-            }
+                if (_scheduledMatches.ContainsKey(match.Code))
+                {
+                    Swap<M>(match);
+                }
 
-            _scheduledMatches.Add(match.Code, match);
+                matchesInRound.Add(match);
+                _scheduledMatches.Add(match.Code, match);
+            }
         }
 
         private static void Swap<M>(M match) where M : IFixture

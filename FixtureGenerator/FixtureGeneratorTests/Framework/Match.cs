@@ -11,15 +11,28 @@ namespace FixtureGeneratorTests.Framework
     {
         public IFixtureEntity? HomeEntity { get; set; }
         public IFixtureEntity? AwayEntity { get; set; }
+        public string? Code { get; set; }
 
         public Match()
         {
+
         }
 
-        public Match(IFixtureEntity homeEntity, IFixtureEntity awayEntity)
+        public void SetUniqueMatchCode()
         {
-            HomeEntity = homeEntity;
-            AwayEntity = awayEntity;
+            if (HomeEntity != null && AwayEntity != null)
+            {
+                Code = $"{HomeEntity.Code}{AwayEntity.Code}";
+            }
+        }
+
+        public override string ToString()
+        {
+            if (HomeEntity != null && AwayEntity != null)
+            {
+                return $"{HomeEntity.Code} v {AwayEntity.Code}";
+            }
+            return "INVALID";
         }
     }
 }

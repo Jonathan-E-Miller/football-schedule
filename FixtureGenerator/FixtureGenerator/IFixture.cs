@@ -8,7 +8,9 @@ namespace FixtureGenerator
 {
     public interface IFixture
     {
-        public IFixtureEntity HomeEntity { get; set; }
-        public IFixtureEntity AwayEntity { get; set; }
+        public IFixtureEntity? HomeEntity { get; set; }
+        public IFixtureEntity? AwayEntity { get; set; }
+        public string? Code { get; set; }
+        public void SetUniqueMatchCode();
     }
 }

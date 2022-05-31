@@ -15,5 +15,10 @@ namespace FixtureGeneratorTests.Framework
         {
             Code = code;
         }
+
+        public override string ToString()
+        {
+            return Code;
+        }
     }
 }

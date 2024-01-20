@@ -11,7 +11,7 @@ namespace FixtureGeneratorTests.Framework
     {
         public IFixtureEntity? HomeEntity { get; set; }
         public IFixtureEntity? AwayEntity { get; set; }
-        public string? Code { get; set; }
+        public string Code { get; set; } = string.Empty;
 
         public Match()
         {

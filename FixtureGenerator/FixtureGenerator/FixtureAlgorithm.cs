@@ -1,6 +1,6 @@
 ﻿namespace FixtureGenerator
 {
-    public static class FixtureAlgorithm
+    public class Fixture
     {
         public enum Options
         {

@@ -16,7 +16,7 @@ namespace Sandbox
 
         public override string ToString()
         {
-            return $"{HomeEntity.ToString()} v {AwayEntity.ToString()}";
+            return $"{HomeEntity?.ToString()} v {AwayEntity?.ToString()}";
         }
     }
 }

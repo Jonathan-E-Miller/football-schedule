@@ -1,0 +1,56 @@
+﻿name: build and test
+
+on:
+  push:
+    branches:
+      - '*'
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    branches:
+      - '*'
+    paths-ignore:
+      - 'README.md'
+
+env:
+  DOTNET_VERSION: '6.0.x'
+
+jobs:
+  build-and-test:
+    name: build-and-test-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test with coverage
+        run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+      - name: Publish coverage
+        uses: coverlet/coverlet-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          coverage-file: './coverage.opencover.xml'
+
+      - name: Check coverage
+        run: |
+          coverage=$(grep -oP '<Summary.+?Line-rate="([0-9]+\.[0-9]+)"' ./coverage.opencover.xml | sed -n 's/.*Line-rate="\([0-9.]\+\)".*/\1/p')
+          echo "Code coverage: $coverage%"
+          if (( $(echo "$coverage < 80" | bc -l) )); then
+            echo "Error: Code coverage is below 80%"
+            exit 1
+          fi

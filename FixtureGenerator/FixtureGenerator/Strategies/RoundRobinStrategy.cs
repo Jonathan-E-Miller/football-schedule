@@ -64,7 +64,6 @@
             M match = new M();
             match.HomeEntity = homeTeam;
             match.AwayEntity = awayTeam;
-            match.SetUniqueMatchCode();
 
             return match;
         }

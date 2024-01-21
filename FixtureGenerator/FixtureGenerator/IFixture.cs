@@ -10,7 +10,6 @@ namespace FixtureGenerator
     {
         public IFixtureEntity? HomeEntity { get; set; }
         public IFixtureEntity? AwayEntity { get; set; }
-        public string? Code { get; set; }
-        public void SetUniqueMatchCode();
+        public string? Code { get; }
     }
 }

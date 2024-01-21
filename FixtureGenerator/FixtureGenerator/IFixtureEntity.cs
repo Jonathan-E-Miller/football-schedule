@@ -2,6 +2,6 @@
 {
     public interface IFixtureEntity
     {
-        public string Code { get; set; }
+        public string Code { get; }
     }
 }

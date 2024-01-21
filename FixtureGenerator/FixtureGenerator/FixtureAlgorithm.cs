@@ -89,7 +89,6 @@
             M match = new M();
             match.HomeEntity = homeTeam;
             match.AwayEntity = awayTeam;
-            match.SetUniqueMatchCode();
 
             return match;
         }
@@ -111,7 +110,6 @@
         private static void Swap<M>(M match) where M : IFixture
         {
             (match.AwayEntity, match.HomeEntity) = (match.HomeEntity, match.AwayEntity);
-            match.SetUniqueMatchCode();
         }
     }
 }

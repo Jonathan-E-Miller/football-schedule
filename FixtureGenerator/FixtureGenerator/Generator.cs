@@ -1,7 +1,4 @@
 ﻿using FixtureGenerator.Strategies;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 
 namespace FixtureGenerator
 {
@@ -12,12 +9,22 @@ namespace FixtureGenerator
 
         private Dictionary<string, IFixture> _scheduledMatches = new Dictionary<string, IFixture>();
 
+        /// <summary>
+        /// Internal and accessed via unit testing so we can mock out
+        /// dependencies. AssemblyInfo.cs granting permissions.
+        /// </summary>
+        /// <param name="strategy"></param>
+        /// <param name="reverser"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         internal Generator(IFixtureStrategy strategy, IReverser reverser)
         {
             _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy));
             _reverser = reverser ?? throw new ArgumentNullException(nameof(reverser));
         }
 
+        /// <summary>
+        /// Should be called by consuming code.
+        /// </summary>
         public Generator() : this(new RoundRobinStrategy(), new Reverser()) { }
 
         public List<List<M>> GenerateFixtures<M, T>(IEnumerable<T> fixtureEntities, Fixture.Options option = Fixture.Options.EHome)

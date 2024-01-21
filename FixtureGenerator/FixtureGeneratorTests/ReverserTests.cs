@@ -4,11 +4,10 @@ using FluentAssertions;
 
 namespace FixtureGeneratorTests
 {
-
     public class ReverserTests
     {
         private List<Team> _teams;
-        private List<List<Framework.Match>> _matches;
+        private List<List<Match>> _matches;
         private Reverser _reverser;
 
         [SetUp]

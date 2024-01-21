@@ -27,7 +27,7 @@ namespace FixtureGenerator
         /// </summary>
         public Generator() : this(new RoundRobinStrategy(), new Reverser()) { }
 
-        public List<List<M>> GenerateFixtures<M, T>(IEnumerable<T> fixtureEntities, Fixture.Options option = Fixture.Options.EHome)
+        public List<List<M>> GenerateFixtures<M, T>(IEnumerable<T> fixtureEntities)
             where M : IFixture, new()
             where T : IFixtureEntity
         {

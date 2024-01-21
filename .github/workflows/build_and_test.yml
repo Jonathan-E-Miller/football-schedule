@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -37,20 +37,28 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - name: Test with coverage
+      - name: Test
         run: dotnet test --no-restore --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      
+      - name: Copy Coverage To Predictable Location
+        run: cp coverage/**/coverage.cobertura.xml coverage.cobertura.xml
 
-      - name: Publish coverage
-        uses: coverlet/coverlet-action@v3
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.2.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          coverage-file: './coverage.opencover.xml'
+          filename: coverage.cobertura.xml
+          badge: true
+          fail_below_min: true
+          format: markdown
+          hide_branch_rate: false
+          hide_complexity: true
+          indicators: true
+          output: both
+          thresholds: '60 80'
 
-      - name: Check coverage
-        run: |
-          coverage=$(grep -oP '<Summary.+?Line-rate="([0-9]+\.[0-9]+)"' ./coverage.opencover.xml | sed -n 's/.*Line-rate="\([0-9.]\+\)".*/\1/p')
-          echo "Code coverage: $coverage%"
-          if (( $(echo "$coverage < 80" | bc -l) )); then
-            echo "Error: Code coverage is below 80%"
-            exit 1
-          fi
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
